@@ -2,9 +2,7 @@ from controller import ReversiController
 
 class BoardView:
     def __init__(self):
-        
         self.controller=ReversiController()
-        
         
     def print_board(self):
             size = len(self.controller.board())
@@ -13,7 +11,6 @@ class BoardView:
                 print(f"{i} " + " ".join(row))
             print(f"current turn:{self.controller.turn()}")
             print(f"you can put your stone on {self.controller.valid_moves()}")
-            
             
     def change_stone(self):
         put_cell=input("You put your stone on:")
@@ -28,10 +25,6 @@ class BoardView:
         else:
             print("please input correct answer")
 
-        
-
-                
-                
     def run(self) -> None:
         while True:
             self.print_board()

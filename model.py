@@ -16,8 +16,6 @@ class ReversiModel:
         self.enemy = "W"
         self.valid_moves = {(2,4),(2,5),(3,5)}
         
-            
-            
     def change_stone(self,x,y):
         self.board[x][y]=self.turn
         for dx in -1,0,1:
@@ -46,7 +44,6 @@ class ReversiModel:
         if self.valid_moves == set():
             self.search_putting_position()
 
-        
         return self.board, self.turn
     
     def search_putting_position(self):
