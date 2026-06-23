@@ -4,17 +4,17 @@ class ReversiModel:
         self.board = [
         ["･","･","･","･","･","･","･","･"],
         ["･","･","･","･","･","･","･","･"],
-        ["･","･","･","･","*","･","･","･"],
+        ["･","･","･","･","*","*","･","･"],
         ["･","･","･","B","W","*","･","･"],
-        ["･","･","*","W","B","･","･","･"],
-        ["･","･","･","*","･","･","･","･"],
+        ["･","･","･","B","B","･","･","･"],
+        ["･","･","･","･","･","･","･","･"],
         ["･","･","･","･","･","･","･","･"],
         ["･","･","･","･","･","･","･","･"]
         ]
         
         self.turn = "B"
         self.enemy = "W"
-        self.valid_moves = {(2,4),(3,5),(4,2),(5,3)}
+        self.valid_moves = {(2,4),(2,5),(3,5)}
         
             
             
@@ -43,6 +43,8 @@ class ReversiModel:
                                 print(px,py)
                                 self.board[px][py]=self.turn
         self.search_putting_position()
+        if self.valid_moves == set():
+            self.search_putting_position()
 
         
         return self.board, self.turn
