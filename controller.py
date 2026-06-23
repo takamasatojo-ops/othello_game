@@ -18,3 +18,6 @@ class ReversiController:
     
     def check_end(self):
         return self.model.check_end_game
+    
+    def winner(self):
+        return self.model.winner

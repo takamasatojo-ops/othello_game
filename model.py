@@ -16,6 +16,7 @@ class ReversiModel:
         self.enemy = "W"
         self.valid_moves = {(0,6),(0,7),(1,7)}
         self.check_end_game=True
+        self.winner="Draw"
         
     def control_board(self,x,y):
         self.change_stone(x,y)
@@ -24,8 +25,9 @@ class ReversiModel:
             self.search_putting_position()
             if self.valid_moves == set():
                 self.check_end_game = False
+                self.calculate_stone()
 
-        return self.board, self.turn, self.valid_moves
+        return self.board, self.turn, self.valid_moves, self.winner
         
     def change_stone(self,x,y):
         self.board[x][y]=self.turn
@@ -88,6 +90,24 @@ class ReversiModel:
                                         self.board[x][y] = "*"
                                         self.valid_moves.add((x,y))
                                         # print(self.valid_moves)
+                                        
+    def calculate_stone(self):
+        num_B=0
+        num_W=0
+        for x in range(8):
+            for y in range(8):
+                if self.board[x][y] == "B":
+                    num_B+=1
+                elif self.board[x][y] == "W":
+                    num_W+=1
+        
+        if num_B>num_W:
+            self.winner="Black"
+        elif num_W>num_B:
+            self.winner="White"
+        elif num_B == num_W:
+            self.winner="Draw"
+    
 
 
 

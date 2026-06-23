@@ -30,5 +30,6 @@ class BoardView:
             self.print_board()
             self.change_stone()
         print("game set")
+        print(f"winner is {self.controller.winner()}")
 
 
