@@ -2,25 +2,28 @@
 class ReversiModel:
     def __init__(self):
         self.board = [
-        ["･","･","･","･","･","･","･","･"],
-        ["･","･","･","･","･","･","･","･"],
-        ["･","･","･","･","*","･","･","･"],
-        ["･","･","･","B","W","*","･","･"],
-        ["･","･","*","W","B","･","･","･"],
-        ["･","･","･","*","･","･","･","･"],
-        ["･","･","･","･","･","･","･","･"],
-        ["･","･","･","･","･","･","･","･"]
+        ["B","B","B","B","B","W","*","*"],
+        ["B","B","B","B","B","B","W","*"],
+        ["B","B","B","B","B","B","B","W"],
+        ["B","B","B","B","B","B","B","B"],
+        ["B","B","B","B","B","B","B","B"],
+        ["B","B","B","B","B","B","B","B"],
+        ["B","B","B","B","B","B","B","B"],
+        ["B","B","B","B","B","B","B","B"]
         ]
         
         self.turn = "B"
         self.enemy = "W"
-        self.valid_moves = {(2,4),(3,5),(4,2),(5,3)}
+        self.valid_moves = {(0,6),(0,7),(1,7)}
+        self.check_end_game=True
         
     def control_board(self,x,y):
         self.change_stone(x,y)
         self.search_putting_position()
         if self.valid_moves == set():
             self.search_putting_position()
+            if self.valid_moves == set():
+                self.check_end_game = False
 
         return self.board, self.turn, self.valid_moves
         

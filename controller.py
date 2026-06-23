@@ -16,3 +16,5 @@ class ReversiController:
     def turn(self):
         return self.model.turn
     
+    def check_end(self):
+        return self.model.check_end_game
