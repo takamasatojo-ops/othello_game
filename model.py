@@ -16,6 +16,14 @@ class ReversiModel:
         self.enemy = "W"
         self.valid_moves = {(2,4),(3,5),(4,2),(5,3)}
         
+    def control_board(self,x,y):
+        self.change_stone(x,y)
+        self.search_putting_position()
+        if self.valid_moves == set():
+            self.search_putting_position()
+
+        return self.board, self.turn, self.valid_moves
+        
     def change_stone(self,x,y):
         self.board[x][y]=self.turn
         for dx in -1,0,1:
@@ -37,14 +45,9 @@ class ReversiModel:
                             continue
                         elif self.board[nx][ny] == self.turn:
                             for px, py in flips:
-                                print(flips)
-                                print(px,py)
+                                # print(flips)
+                                # print(px,py)
                                 self.board[px][py]=self.turn
-        self.search_putting_position()
-        if self.valid_moves == set():
-            self.search_putting_position()
-
-        return self.board, self.turn
     
     def search_putting_position(self):
         self.valid_moves = set()
@@ -71,8 +74,8 @@ class ReversiModel:
                                 while 0 <= nx < 8 and 0 <= ny < 8 and self.board[nx][ny] == self.enemy:
                                     # print(self.enemy)
                                     # print(x,y)
-                                    print(x,y)
-                                    print(nx,ny)
+                                    # print(x,y)
+                                    # print(nx,ny)
                                     nx+=dx
                                     ny+=dy
                                     if not (0 <= nx < 8 and 0 <= ny < 8):
@@ -81,12 +84,8 @@ class ReversiModel:
                                         # print(self.turn)
                                         self.board[x][y] = "*"
                                         self.valid_moves.add((x,y))
-                                        print(self.valid_moves)
-            
-        # print(self.valid_moves)
-        return self.valid_moves
-    
+                                        # print(self.valid_moves)
 
-    
+
 
 

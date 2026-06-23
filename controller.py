@@ -11,7 +11,8 @@ class ReversiController:
         return self.model.valid_moves
     
     def put(self,x,y):
-        self.model.change_stone(x,y)
+        self.model.control_board(x,y)
         
     def turn(self):
         return self.model.turn
+    
