@@ -23,7 +23,16 @@ class ReversiModel:
         self.winner=1
         self.x=9
         self.y=9
-        self.input_cell=1
+        self.check_input=1
+        
+    def control_board(self,put_cell):
+        self.check_input_cell(put_cell)
+        x=self.x
+        y=self.y
+        if self.check_input==1:
+            self.change_stone(x,y)
+            self.search_putting_position()
+            self.check_turn()
         
     def check_input_cell(self,put_cell):
         try:
@@ -32,9 +41,9 @@ class ReversiModel:
             answer = None
         if answer in self.valid_moves:
             self.x,self.y=map(int, put_cell.strip("()").split(","))
-            self.input_cell=1
+            self.check_input=1
         else:
-            self.input_cell=0
+            self.check_input=0
         
     def change_stone(self,x,y):
         self.board[x][y]=self.turn
@@ -105,7 +114,6 @@ class ReversiModel:
             if self.valid_moves == set():
                 self.check_end_game = False
                 self.calculate_stone()
-        
                                         
     def calculate_stone(self):
         for x in range(8):
@@ -114,7 +122,6 @@ class ReversiModel:
                     self.num_B+=1
                 elif self.board[x][y] == 2:
                     self.num_W+=1
-        
         if self.num_B>self.num_W:
             self.winner=1
         elif self.num_W>self.num_B:

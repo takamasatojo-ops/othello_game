@@ -14,13 +14,13 @@ class BoardView:
         ["･","･","･","･","･","･","･","･"]
         ]
     
-    def print_all(self, model_board, model_turn, model_valid_moves,model_input_cell):
+    def print_all(self, model_board, model_turn, model_valid_moves,model_check_input):
         self.print_board(model_board)
         if model_turn == 1:
             self.turn="B"
         elif model_turn == 2:
             self.turn="W"
-        if model_input_cell==0:
+        if model_check_input==0:
             print("Please input correct answer")
         print(f"current turn:{self.turn}")
         print(f"you can put your stone on {model_valid_moves}")

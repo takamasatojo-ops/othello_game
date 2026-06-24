@@ -12,21 +12,15 @@ class ReversiController:
     def change_stone(self):
         #put_cellはstr型なのでtuple型へ変換
         put_cell=self.view.change_stone()
-        self.model.check_input_cell(put_cell)
-        x=self.model.x
-        y=self.model.y
-        if self.model.input_cell==1:
-            self.model.change_stone(x,y)
-            self.model.search_putting_position()
-            self.model.check_turn()
+        self.model.control_board(put_cell)
             
     def run(self) -> None:
         while self.model.check_end_game==True:
             model_board=self.model.board
             model_turn=self.model.turn
             model_valid_moves=self.model.valid_moves
-            model_input_cell=self.model.input_cell
-            self.view.print_all(model_board,model_turn,model_valid_moves,model_input_cell)
+            model_check_input=self.model.check_input
+            self.view.print_all(model_board,model_turn,model_valid_moves,model_check_input)
             self.change_stone()
         model_board=self.model.board
         model_winner=self.model.winner
