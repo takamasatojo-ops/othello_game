@@ -18,6 +18,23 @@ class ReversiModel:
         self.enemy = 2
         self.valid_moves = {(2,4),(3,5),(4,2),(5,3)}
         self.check_end_game=True
+        self.num_B=0
+        self.num_W=0
+        self.winner=1
+        self.x=9
+        self.y=9
+        self.input_cell=1
+        
+    def check_input_cell(self,put_cell):
+        try:
+            answer = tuple(map(int, put_cell.strip("()").split(",")))
+        except ValueError:
+            answer = None
+        if answer in self.valid_moves:
+            self.x,self.y=map(int, put_cell.strip("()").split(","))
+            self.input_cell=1
+        else:
+            self.input_cell=0
         
     def change_stone(self,x,y):
         self.board[x][y]=self.turn
@@ -81,6 +98,14 @@ class ReversiModel:
                                         self.valid_moves.add((x,y))
                                         # print(self.valid_moves)
         return self.board, self.valid_moves, self.turn
+    
+    def check_turn(self):
+        if self.valid_moves == set():
+            self.search_putting_position()
+            if self.valid_moves == set():
+                self.check_end_game = False
+                self.calculate_stone()
+        
                                         
     def calculate_stone(self):
         for x in range(8):
