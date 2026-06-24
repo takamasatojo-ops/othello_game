@@ -2,23 +2,22 @@
 class ReversiModel:
     def __init__(self):
         self.board = [
-        ["･","･","･","･","･","･","･","･"],
-        ["･","･","･","･","･","･","･","･"],
-        ["･","･","･","･","*","･","･","･"],
-        ["･","･","･","B","W","*","･","･"],
-        ["･","･","*","W","B","･","･","･"],
-        ["･","･","･","*","･","･","･","･"],
-        ["･","･","･","･","･","･","･","･"],
-        ["･","･","･","･","･","･","･","･"]
+        [0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0],
+        [0,0,0,0,3,0,0,0],
+        [0,0,0,1,2,3,0,0],
+        [0,0,3,2,1,0,0,0],
+        [0,0,0,3,0,0,0,0],
+        [0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0]
         ]
         
-        self.turn = "B"
-        self.enemy = "W"
+        
+        # 黒が１、白が２、何もないマスが0、自分の石を置けるますが３
+        self.turn = 1
+        self.enemy = 2
         self.valid_moves = {(2,4),(3,5),(4,2),(5,3)}
         self.check_end_game=True
-        self.winner="Draw"
-        self.num_B=0
-        self.num_W=0
         
     def change_stone(self,x,y):
         self.board[x][y]=self.turn
@@ -47,15 +46,15 @@ class ReversiModel:
     
     def search_putting_position(self):
         self.valid_moves = set()
-        self.turn = "W" if self.turn=="B" else "B"
-        self.enemy="W" if self.turn=="B" else "B"
+        self.turn = 2 if self.turn==1 else 1
+        self.enemy=2 if self.turn==1 else 1
         for x in range(8):
             for y in range(8):
-                if self.board[x][y] == "*":
-                    self.board[x][y] = "･"
+                if self.board[x][y] == 3:
+                    self.board[x][y] = 0
         for x in range(8):
             for y in range(8):
-                if self.board[x][y] == "B" or self.board[x][y] == "W":
+                if self.board[x][y] == 1 or self.board[x][y] == 2:
                     continue
                 else:
                     for dx in -1,0,1:
@@ -78,24 +77,27 @@ class ReversiModel:
                                         continue
                                     elif self.board[nx][ny] == self.turn:
                                         # print(self.turn)
-                                        self.board[x][y] = "*"
+                                        self.board[x][y] = 3
                                         self.valid_moves.add((x,y))
                                         # print(self.valid_moves)
+        return self.board, self.valid_moves, self.turn
                                         
     def calculate_stone(self):
         for x in range(8):
             for y in range(8):
-                if self.board[x][y] == "B":
+                if self.board[x][y] == 1:
                     self.num_B+=1
-                elif self.board[x][y] == "W":
+                elif self.board[x][y] == 2:
                     self.num_W+=1
         
         if self.num_B>self.num_W:
-            self.winner="Black"
+            self.winner=1
         elif self.num_W>self.num_B:
-            self.winner="White"
+            self.winner=2
         elif self.num_B == self.num_W:
-            self.winner="Draw"
+            self.winner=3
+        #  引き分けは３とする
+        return self.winner, self.num_B, self.num_W
     
 
 

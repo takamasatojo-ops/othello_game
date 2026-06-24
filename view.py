@@ -1,40 +1,48 @@
-from controller import ReversiController
+from model import ReversiModel
 
 class BoardView:
     def __init__(self):
-        self.controller=ReversiController()
+        self.model = ReversiModel()
+        self.board = [
+        ["･","･","･","･","･","･","･","･"],
+        ["･","･","･","･","･","･","･","･"],
+        ["･","･","･","･","*","･","･","･"],
+        ["･","･","･","B","W","*","･","･"],
+        ["･","･","*","W","B","･","･","･"],
+        ["･","･","･","*","･","･","･","･"],
+        ["･","･","･","･","･","･","･","･"],
+        ["･","･","･","･","･","･","･","･"]
+        ]
     
     def print_all(self):
+        print(self.model.board)
         self.print_board()
-        print(f"current turn:{self.controller.turn()}")
-        print(f"you can put your stone on {self.controller.valid_moves()}")
+        if self.model.turn == 1:
+            self.turn="B"
+        elif self.model.turn == 2:
+            self.turn="W"
+        print(f"current turn:{self.turn}")
+        print(f"you can put your stone on {self.model.valid_moves}")
     
     def print_board(self):
+        for x in range(8):
+            for y in range(8):
+                if self.model.board[x][y] == 0:
+                    self.board[x][y] = "･"
+                elif self.model.board[x][y] == 1:
+                    self.board[x][y] = "B"
+                elif self.model.board[x][y] == 2:
+                    self.board[x][y] ="W"
+                elif self.model.board[x][y] == 3:
+                    self.board[x][y] = "*"
         print("  " + " ".join(str(i) for i in range(8)))
-        for i, row in enumerate(self.controller.board()):
+        for i, row in enumerate(self.board):
             print(f"{i} " + " ".join(row))
     
     def change_stone(self):
         put_cell=input("You put your stone on:")
-            #put_cellはstr型なのでtuple型へ変換
-        try:
-            answer = tuple(map(int, put_cell.strip("()").split(",")))
-        except ValueError:
-            answer = None
-        if answer in self.controller.valid_moves():
-            x,y=map(int, put_cell.strip("()").split(","))
-            self.controller.put(x,y)
-        else:
-            print("please input correct answer")
+        return put_cell
 
-    def run(self) -> None:
-        while self.controller.check_end()==True:
-            self.print_all()
-            self.change_stone()
-        self.print_board()
-        print("game set")
-        print(f"number of Black is {self.controller.num_B()}")
-        print(f"number of White is {self.controller.num_W()}")
-        print(f"winner is {self.controller.winner()}")
+
 
 

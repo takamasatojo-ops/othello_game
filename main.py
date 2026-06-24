@@ -1,6 +1,6 @@
-from view import BoardView
+from controller import ReversiController
 
 if __name__ == "__main__":
-    view=BoardView()
+    view=ReversiController()
     view.run()
     
