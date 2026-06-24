@@ -1,14 +1,12 @@
 from model import ReversiModel
 from view import BoardView
 
+
 class ReversiController:
     def __init__(self):
         self.model=ReversiModel()
         self.view=BoardView()
-        
-    # def control_board(self,put_cell):
-
-                
+    
     def change_stone(self):
         #put_cellはstr型なのでtuple型へ変換
         put_cell=self.view.change_stone()

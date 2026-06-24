@@ -1,5 +1,6 @@
 from model import ReversiModel
 
+
 class BoardView:
     def __init__(self):
         self.model=ReversiModel()

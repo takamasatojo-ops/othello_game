@@ -12,8 +12,7 @@ class ReversiModel:
         [0,0,0,0,0,0,0,0]
         ]
         
-        
-        # 黒が１、白が２、何もないマスが0、自分の石を置けるますが３
+        # 黒が１、白が２、何もないマスが0、自分の石を置けるマスが３
         self.turn = 1
         self.enemy = 2
         self.valid_moves = {(2,4),(3,5),(4,2),(5,3)}
@@ -114,7 +113,7 @@ class ReversiModel:
             if self.valid_moves == set():
                 self.check_end_game = False
                 self.calculate_stone()
-                                        
+    
     def calculate_stone(self):
         for x in range(8):
             for y in range(8):
