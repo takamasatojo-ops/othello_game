@@ -3,15 +3,17 @@ from controller import ReversiController
 class BoardView:
     def __init__(self):
         self.controller=ReversiController()
-        
-    def print_board(self):
-        size = len(self.controller.board())
-        print("  " + " ".join(str(i) for i in range(size)))
-        for i, row in enumerate(self.controller.board()):
-            print(f"{i} " + " ".join(row))
+    
+    def print_all(self):
+        self.print_board()
         print(f"current turn:{self.controller.turn()}")
         print(f"you can put your stone on {self.controller.valid_moves()}")
-            
+    
+    def print_board(self):
+        print("  " + " ".join(str(i) for i in range(8)))
+        for i, row in enumerate(self.controller.board()):
+            print(f"{i} " + " ".join(row))
+    
     def change_stone(self):
         put_cell=input("You put your stone on:")
             #put_cellはstr型なのでtuple型へ変換
@@ -27,9 +29,12 @@ class BoardView:
 
     def run(self) -> None:
         while self.controller.check_end()==True:
-            self.print_board()
+            self.print_all()
             self.change_stone()
+        self.print_board()
         print("game set")
+        print(f"number of Black is {self.controller.num_B()}")
+        print(f"number of White is {self.controller.num_W()}")
         print(f"winner is {self.controller.winner()}")
 
 
