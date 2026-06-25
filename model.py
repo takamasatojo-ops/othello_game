@@ -65,8 +65,6 @@ class ReversiModel:
                             continue
                         elif self.board[nx][ny] == self.turn:
                             for px, py in flips:
-                                # print(flips)
-                                # print(px,py)
                                 self.board[px][py]=self.turn
     
     def search_putting_position(self):
@@ -92,19 +90,13 @@ class ReversiModel:
                                 continue
                             elif  self.board[nx][ny] == self.enemy:
                                 while 0 <= nx < 8 and 0 <= ny < 8 and self.board[nx][ny] == self.enemy:
-                                    # print(self.enemy)
-                                    # print(x,y)
-                                    # print(x,y)
-                                    # print(nx,ny)
                                     nx+=dx
                                     ny+=dy
                                     if not (0 <= nx < 8 and 0 <= ny < 8):
                                         continue
                                     elif self.board[nx][ny] == self.turn:
-                                        # print(self.turn)
                                         self.board[x][y] = 3
                                         self.valid_moves.add((x,y))
-                                        # print(self.valid_moves)
         return self.board, self.valid_moves, self.turn
     
     def check_turn(self):
