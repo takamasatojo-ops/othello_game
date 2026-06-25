@@ -1,7 +1,36 @@
 
 class ReversiModel:
-    def __init__(self):
-        self.board = [
+    def __init__(self,board=None,valid_moves=None,turn=None,enemy=None,check_end_game=None):
+        if board==None:
+            self.board = self.init_board()
+        else:
+            self.board = board
+        if valid_moves==None:
+            self.valid_moves = self.init_valid_move()
+        else:
+            self.valid_moves = valid_moves
+        if turn==None:
+            self.turn = self.init_turn()
+        else:
+            self.turn = turn
+        if enemy==None:
+            self.enemy = self.init_enemy()
+        else:
+            self.enemy = enemy
+        if check_end_game==None:
+            self.check_end_game = self.init_check_end_game()
+        else:
+            self.check_end_game = check_end_game
+        self.num_B=0
+        self.num_W=0
+        self.winner=1
+        self.x=9
+        self.y=9
+        self.check_input=1
+        
+    def init_board(self):
+        # 黒が１、白が２、何もないマスが0、自分の石を置けるマスが３
+        return [
         [0,0,0,0,0,0,0,0],
         [0,0,0,0,0,0,0,0],
         [0,0,0,0,3,0,0,0],
@@ -12,17 +41,18 @@ class ReversiModel:
         [0,0,0,0,0,0,0,0]
         ]
         
+    def init_valid_move(self):
+        return {(2,4),(3,5),(4,2),(5,3)}
         # 黒が１、白が２、何もないマスが0、自分の石を置けるマスが３
-        self.turn = 1
-        self.enemy = 2
-        self.valid_moves = {(2,4),(3,5),(4,2),(5,3)}
-        self.check_end_game=True
-        self.num_B=0
-        self.num_W=0
-        self.winner=1
-        self.x=9
-        self.y=9
-        self.check_input=1
+        
+    def init_turn(self):
+        return 1
+
+    def init_enemy(self):
+        return 2
+    
+    def init_check_end_game(self):
+        return True
         
     def control_board(self,put_cell):
         self.check_input_cell(put_cell)
@@ -32,6 +62,7 @@ class ReversiModel:
             self.change_stone(x,y)
             self.search_putting_position()
             self.check_turn()
+        return self.board, self.valid_moves, self.turn, self.enemy,self.check_end_game
         
     def check_input_cell(self,put_cell):
         try:
@@ -97,7 +128,7 @@ class ReversiModel:
                                     elif self.board[nx][ny] == self.turn:
                                         self.board[x][y] = 3
                                         self.valid_moves.add((x,y))
-        return self.board, self.valid_moves, self.turn
+        return self.board, self.valid_moves, self.turn, self.enemy
     
     def check_turn(self):
         if self.valid_moves == set():
