@@ -1,153 +1,64 @@
-import random
 import copy
 
+from model import ReversiModel
 
-class ReversiModelCpu:
-    def __init__(self,board=None,valid_moves=None,turn=None,enemy=None,check_end_game=None):
-        if board==None:
-            self.board = self.init_board()
-        else:
-            self.board = board
-        if valid_moves==None:
-            self.valid_moves = self.init_valid_move()
-        else:
-            self.valid_moves = valid_moves
-        if turn==None:
-            self.turn = self.init_turn()
-        else:
-            self.turn = turn
-        if enemy==None:
-            self.enemy = self.init_enemy()
-        else:
-            self.enemy = enemy
-        if check_end_game==None:
-            self.check_end_game = self.init_check_end_game()
-        else:
-            self.check_end_game = check_end_game
-        self.num_B=0
-        self.num_W=0
-        self.winner=1
-        self.x=9
-        self.y=9
-        self.check_input=1
-        
-    def init_board(self):
-        # 黒が１、白が２、何もないマスが0、自分の石を置けるマスが３
-        return [
-            [1,1,1,1,1,1,1,1],
-            [1,1,1,1,1,1,1,1],
-            [1,1,1,1,3,1,1,0],
-            [1,1,3,1,2,3,1,1],
-            [1,1,3,2,1,1,1,1],
-            [1,1,3,3,1,1,1,1],
-            [1,1,1,1,1,1,1,1],
-            [1,1,1,1,1,1,1,1]
-        ]
-        
-    def init_valid_move(self):
-        return {(2,4),(3,5),(4,2),(5,3)}
-        # 黒が１、白が２、何もないマスが0、自分の石を置けるマスが３
-        
-    def init_turn(self):
-        return 1
 
-    def init_enemy(self):
-        return 2
-    
-    def init_check_end_game(self):
-        return True
-    
-    def decide_stone(self,decide_stone):
-        if decide_stone==2:
-            self.cpu_turn=1
-        elif decide_stone==1:
-            self.cpu_turn=2
-        return self.cpu_turn
-            
-    # def control_all(self,put_cell,decide_stone):
-    #     self.decide_stone(decide_stone)
-    #     if decide_stone==2:
-    #         self.cpu_control()
-    #         self.control_board(put_cell)
-    #     elif decide_stone==1:
-    #         self.control_board(put_cell)
-    #         self.cpu_control()
+class ReversiModelCpu(ReversiModel):
+    def __init__(self):
+        super().__init__(board=None,valid_moves=None,turn=None,enemy=None,check_end_game=None)
+        self.minimax_depth=3
+        self.best_cpu_position=""
+        #1は人間、２はCPU
     
     # CPUが黒の時に最初に実行
     def start_CPU(self):
-            self.select_cpu_position()
-            x=self.x
-            y=self.y
-            self.change_stone(x,y)
-            self.search_putting_position()
+        self.select_cpu_position()
+        x=self.x
+        y=self.y
+        self.change_stone(x,y)
+        self.switch_turn()
+        self.search_putting_position_cpu()
         
-    def control_board(self,put_cell):
-            self.check_input_cell(put_cell)
-            x=self.x
-            y=self.y
-            if self.check_input==1:
-                self.change_stone(x,y)
-                self.search_putting_position()
-                self.board_before_cpu=copy.deepcopy(self.board)
-                self.valid_moves_before_cpu=self.valid_moves.copy()
-                self.cpu_turn=self.turn
-                if self.valid_moves == set():
-                    self.search_putting_position()
-                else:
-                    self.select_cpu_position()
-                    x=self.x
-                    y=self.y
-                    self.change_stone(x,y)
-                    self.search_putting_position()
-            # self.check_turn()
-            return self.board_before_cpu, self.board, self.valid_moves, self.turn, self.enemy,self.check_end_game
+    def control_board_cpu(self,put_cell,human_stone):
+        if self.turn==human_stone:
+            self.human_control(put_cell)
+        else:
+            self.cpu_control()
+        
+        if self.valid_moves == set():
+            self.switch_turn()
+            self.search_putting_position_cpu()
+            if self.valid_moves == set():
+                self.check_end_game = False
+                self.calculate_stone()
+        # self.check_turn()
+        return self.best_cpu_position, self.board_before_cpu, self.board, self.valid_moves, self.turn, self.enemy,self.check_end_game
     
     def cpu_control(self):
-            self.select_cpu_position()
-            x=self.x
-            y=self.y
-            self.change_stone(x,y)
-            self.search_putting_position()
-        
-    def check_input_cell(self,put_cell):
-        #put_cellはstr型なのでtuple型へ変換
-        try:
-            answer = tuple(map(int, put_cell.strip("()").split(",")))
-        except ValueError:
-            answer = None
-        if answer in self.valid_moves:
-            self.x,self.y=map(int, put_cell.strip("()").split(","))
-            self.check_input=1
-        else:
-            self.check_input=0
-        
-    def change_stone(self,x,y):
-        self.board[x][y]=self.turn
-        for dx in -1,0,1:
-            for dy in -1,0,1:
-                nx=x+dx
-                ny=y+dy
-                #ひっくり返す候補
-                flips=[]
-                if dx==0 and dy == 0:
-                    continue
-                elif not (0 <= nx < 8 and 0 <= ny < 8):
-                    continue
-                elif self.board[nx][ny] == self.enemy:
-                    while 0 <= nx < 8 and 0 <= ny < 8 and self.board[nx][ny] == self.enemy:
-                        flips.append((nx,ny))
-                        nx+=dx
-                        ny+=dy
-                        if not (0 <= nx < 8 and 0 <= ny < 8):
-                            continue
-                        elif self.board[nx][ny] == self.turn:
-                            for px, py in flips:
-                                self.board[px][py]=self.turn
+        self.select_cpu_position()
+        x=self.x
+        y=self.y
+        self.change_stone(x,y)
+        self.switch_turn()
+        self.search_putting_position_cpu()
     
-    def search_putting_position(self):
-        self.valid_moves = set()
-        self.turn = 2 if self.turn==1 else 1
+    def human_control(self,put_cell):
+        self.check_input_cell(put_cell)
+        x=self.x
+        y=self.y
+        self.change_stone(x,y)
+        self.switch_turn()
+        self.search_putting_position_cpu()
+        self.board_before_cpu=copy.deepcopy(self.board)
+        self.valid_moves_before_cpu=self.valid_moves.copy()
+        self.cpu_turn=self.turn
+        
+    def switch_turn(self):
+        self.turn =2 if self.turn==1 else 1
         self.enemy=2 if self.turn==1 else 1
+        
+    def search_putting_position_cpu(self):
+        self.valid_moves = set()
         for x in range(8):
             for y in range(8):
                 if self.board[x][y] == 3:
@@ -175,30 +86,79 @@ class ReversiModelCpu:
                                         self.board[x][y] = 3
                                         self.valid_moves.add((x,y))
         return self.board, self.valid_moves, self.turn, self.enemy
-    
+        
     def select_cpu_position(self):
-        cpu_position=random.choice(list(self.valid_moves))
-        self.x,self.y=map(int, cpu_position)
-    
-    def check_turn(self):
-        if self.valid_moves == set():
-            self.search_putting_position()
-            if self.valid_moves == set():
-                self.check_end_game = False
-                self.calculate_stone()
-    
-    def calculate_stone(self):
+        copied_model=copy.deepcopy(self)
+        best_score=-float("inf")
+        copied_cpu_turn=copied_model.turn
+        minimax_depth=self.minimax_depth
+        for cpu_position in list(copied_model.valid_moves):
+            copied_model.change_stone(*cpu_position)
+            copied_model.switch_turn()
+            copied_model.search_putting_position_cpu()
+            score=copied_model.minimax(copied_model, minimax_depth-1, copied_cpu_turn, False)
+            
+            if score>best_score:
+                best_score=score
+                self.best_cpu_position=cpu_position
+        self.x,self.y=map(int, self.best_cpu_position)
+            
+    def minimax(self, copied_model, minimax_depth, copied_cpu_turn, is_maximizing):
+        if minimax_depth==0 or copied_model.valid_moves==set():
+            return self.evaluate_board(copied_model,copied_cpu_turn)
+        
+        if is_maximizing:
+            best_score=-float("inf")
+            for cpu_position in list(copied_model.valid_moves):
+                copied_model.change_stone(*cpu_position)
+                copied_model.switch_turn()
+                copied_model.search_putting_position_cpu()
+                
+                score=copied_model.minimax(copied_model, minimax_depth-1, copied_cpu_turn, False)
+                best_score=max(best_score, score)
+            return best_score
+        
+        else:
+            best_human_score=float("inf")
+            for human_position in list(copied_model.valid_moves):
+                copied_model.change_stone(*human_position)
+                copied_model.switch_turn()
+                copied_model.search_putting_position_cpu()
+                
+                score=copied_model.minimax(copied_model, minimax_depth-1, copied_cpu_turn, True)
+                best_human_score=min(best_human_score, score)
+            return best_human_score
+        
+    def check_input_cell_cpu(self,put_cell,human_stone):
+        if self.turn==human_stone:
+            try:
+                answer = tuple(map(int, put_cell.strip("()").split(",")))
+            except ValueError:
+                answer = None
+            if answer in self.valid_moves:
+                self.x,self.y=map(int, put_cell.strip("()").split(","))
+                self.check_input=1
+            else:
+                self.check_input=0
+        else:
+            if put_cell=="":
+                self.check_input=1
+            else:
+                self.check_input=0
+        return self.check_input
+                
+    def evaluate_board(self, copied_model,copied_cpu_turn):
+        num_B=0
+        num_W=0
         for x in range(8):
             for y in range(8):
-                if self.board[x][y] == 1:
-                    self.num_B+=1
-                elif self.board[x][y] == 2:
-                    self.num_W+=1
-        if self.num_B>self.num_W:
-            self.winner=1
-        elif self.num_W>self.num_B:
-            self.winner=2
-        elif self.num_B == self.num_W:
-            self.winner=3
+                if copied_model.board[x][y] == 1:
+                    num_B+=1
+                elif copied_model.board[x][y] == 2:
+                    num_W+=1
         #  引き分けは３とする
-        return self.winner, self.num_B, self.num_W
+        if copied_cpu_turn==1:
+            return num_B-num_W
+        else:
+            return num_W-num_B
+    

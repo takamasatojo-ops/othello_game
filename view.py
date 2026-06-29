@@ -1,9 +1,5 @@
-from model import ReversiModel
-
-
 class BoardView:
     def __init__(self):
-        self.model=ReversiModel()
         self.board = [
         ["･","･","･","･","･","･","･","･"],
         ["･","･","･","･","･","･","･","･"],
@@ -71,31 +67,17 @@ class BoardView:
         if model_cpu_check_input==0:
             print("Please input correct answer")
         print(f"current turn:{self.turn}")
-        print(f"you can put your stone on {model_cpu_valid_moves}")
+        print(f"CPU can put its stone on {model_cpu_valid_moves}")
         
-    def print_cpu_board(self,board_before_cpu,valid_moves_before_cpu,cpu_turn):
-        for x in range(8):
-            for y in range(8):
-                if board_before_cpu[x][y] == 0:
-                    self.board_before_cpu[x][y] = "･"
-                elif board_before_cpu[x][y] == 1:
-                    self.board_before_cpu[x][y] = "B"
-                elif board_before_cpu[x][y] == 2:
-                    self.board_before_cpu[x][y] ="W"
-                elif board_before_cpu[x][y] == 3:
-                    self.board_before_cpu[x][y] = "*"
-        print("  " + " ".join(str(i) for i in range(8)))
-        for i, row in enumerate(self.board_before_cpu):
-            print(f"{i} " + " ".join(row))
-        if cpu_turn == 1:
-            self.cpu_turn="B"
-        elif cpu_turn == 2:
-            self.cpu_turn="W"
-        print(f"current turn:{self.cpu_turn}")
-        print(f"you can put your stone on {valid_moves_before_cpu}")
+    def print_cpu_select(self,cpu_select_position):
+        print(f"CPU putted stone on {cpu_select_position}")
     
     def change_stone(self):
         put_cell=input("You put your stone on:")
+        return put_cell
+    
+    def cpu_put_stone(self):
+        put_cell=input("CPU put its stone(Enter)")
         return put_cell
     
     def end_game(self,model_board, model_winner, model_num_B, model_num_W):

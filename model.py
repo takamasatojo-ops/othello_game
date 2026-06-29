@@ -31,14 +31,14 @@ class ReversiModel:
     def init_board(self):
         # 黒が１、白が２、何もないマスが0、自分の石を置けるマスが３
         return [
-        [0,0,0,0,0,0,0,0],
-        [0,0,0,0,0,0,0,0],
-        [0,0,0,0,3,0,0,0],
-        [0,0,0,1,2,3,0,0],
-        [0,0,3,2,1,0,0,0],
-        [0,0,0,3,0,0,0,0],
-        [0,0,0,0,0,0,0,0],
-        [0,0,0,0,0,0,0,0]
+        [1,1,1,1,1,1,1,1],
+        [1,1,1,1,1,1,1,1],
+        [1,1,1,1,3,1,1,0],
+        [1,1,0,1,2,3,1,1],
+        [1,1,3,2,1,1,1,0],
+        [1,1,0,3,1,1,1,1],
+        [1,1,1,1,1,1,1,1],
+        [1,1,1,1,1,1,1,1]
         ]
         
     def init_valid_move(self):
@@ -74,6 +74,7 @@ class ReversiModel:
             self.check_input=1
         else:
             self.check_input=0
+        return self.check_input
         
     def change_stone(self,x,y):
         self.board[x][y]=self.turn
@@ -100,7 +101,7 @@ class ReversiModel:
     
     def search_putting_position(self):
         self.valid_moves = set()
-        self.turn = 2 if self.turn==1 else 1
+        self.turn =2 if self.turn==1 else 1
         self.enemy=2 if self.turn==1 else 1
         for x in range(8):
             for y in range(8):
