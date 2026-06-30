@@ -10,17 +10,17 @@ class ReversiModelCpu(ReversiModel):
         )
         self.minimax_depth = 3
         self.best_cpu_position = ""
-        self.cpu_put_stone=False
+        self.cpu_put_stone = False
         # 1は人間、２はCPU
 
     def control_board_cpu(self, put_cell, human_stone):
-        self.check_input_cell_cpu(put_cell,human_stone)
+        self.check_input_cell_cpu(put_cell, human_stone)
         if self.check_input == 1:
             self.turn_pass = 0
             self.cpu_put_stone = False
             if self.turn == human_stone:
-                x=self.x
-                y=self.y
+                x = self.x
+                y = self.y
                 self.human_control(x, y)
             else:
                 self.cpu_control()
@@ -34,7 +34,7 @@ class ReversiModelCpu(ReversiModel):
             self.enemy,
             self.check_end_game,
             self.turn_pass,
-            self.check_input
+            self.check_input,
         )
 
     def cpu_control(self):

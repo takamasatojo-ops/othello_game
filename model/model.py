@@ -1,11 +1,6 @@
 class ReversiModel:
     def __init__(
-        self,
-        board=None,
-        valid_moves=None,
-        turn=None,
-        enemy=None,
-        check_end_game=None
+        self, board=None, valid_moves=None, turn=None, enemy=None, check_end_game=None
     ):
         if board is None:
             self.board = self.init_board()
@@ -27,7 +22,7 @@ class ReversiModel:
             self.check_end_game = self.init_check_end_game()
         else:
             self.check_end_game = check_end_game
-        self.turn_pass=0
+        self.turn_pass = 0
         self.num_B = 0
         self.num_W = 0
         self.winner = 1
@@ -69,13 +64,15 @@ class ReversiModel:
             self.turn_pass = 0
             self.human_control(x, y)
             self.check_turn()
-        return self.board, \
-            self.valid_moves, \
-            self.turn, \
-            self.enemy, \
-            self.check_end_game, \
-            self.turn_pass, \
-            self.check_input
+        return (
+            self.board,
+            self.valid_moves,
+            self.turn,
+            self.enemy,
+            self.check_end_game,
+            self.turn_pass,
+            self.check_input,
+        )
 
     def human_control(self, x, y):
         self.change_stone(x, y)
@@ -108,8 +105,7 @@ class ReversiModel:
                     continue
                 elif self.board[nx][ny] == self.enemy:
                     while (
-                        0 <= nx < 8 and 0 <= ny < 8 and
-                        self.board[nx][ny] == self.enemy
+                        0 <= nx < 8 and 0 <= ny < 8 and self.board[nx][ny] == self.enemy
                     ):
                         flips.append((nx, ny))
                         nx += dx
@@ -160,7 +156,7 @@ class ReversiModel:
 
     def check_turn(self):
         if self.valid_moves == set():
-            self.turn_pass=self.turn
+            self.turn_pass = self.turn
             self.switch_turn()
             self.search_putting_position()
             if self.valid_moves == set():

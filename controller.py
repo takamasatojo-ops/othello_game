@@ -1,6 +1,7 @@
 from model.model import ReversiModel
 from model.model_cpu import ReversiModelCpu
 from view import BoardView
+from model.player import HumanPlayer
 
 
 class ReversiController:
@@ -8,6 +9,7 @@ class ReversiController:
         self.model = ReversiModel()
         self.view = BoardView()
         self.model_cpu = ReversiModelCpu()
+        self.human_player = HumanPlayer()
 
     def run(self) -> None:
         input_partner = self.view.select_cpu_human()
@@ -15,7 +17,7 @@ class ReversiController:
             while self.model.check_end_game is True:
                 self.view.print_all(self.model)
                 put_cell = self.view.change_stone()
-                self.model.control_board(put_cell)
+                self.human_player.control_board(put_cell)
             self.view.end_game(self.model)
         elif input_partner == "CPU":
             human_stone = self.view.select_stone()
