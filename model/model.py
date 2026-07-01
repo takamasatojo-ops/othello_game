@@ -1,6 +1,11 @@
 class ReversiModel:
     def __init__(
-        self, board=None, valid_moves=None, turn=None, enemy=None, check_end_game=None
+        self,
+        board=None,
+        valid_moves=None,
+        turn=None,
+        enemy=None,
+        check_end_game=None
     ):
         if board is None:
             self.board = self.init_board()
@@ -33,14 +38,14 @@ class ReversiModel:
     def init_board(self):
         # 黒が１、白が２、何もないマスが0、自分の石を置けるマスが３
         return [
-            [1, 1, 1, 1, 1, 1, 1, 1],
-            [1, 1, 1, 1, 1, 1, 1, 1],
-            [1, 1, 1, 1, 3, 1, 1, 0],
-            [1, 1, 0, 1, 2, 3, 1, 1],
-            [1, 1, 3, 2, 1, 1, 1, 0],
-            [1, 1, 0, 3, 1, 1, 1, 1],
-            [1, 1, 1, 1, 1, 1, 1, 1],
-            [1, 1, 1, 1, 1, 1, 1, 1],
+            [0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 3, 0, 0, 0],
+            [0, 0, 0, 1, 2, 3, 0, 0],
+            [0, 0, 3, 2, 1, 0, 0, 0],
+            [0, 0, 0, 3, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0],
         ]
 
     def init_valid_move(self):
@@ -56,8 +61,8 @@ class ReversiModel:
     def init_check_end_game(self):
         return True
 
-    def control_board(self, put_cell):
-        self.check_input_cell(put_cell)
+    def control_board(self, input_row, input_column):
+        self.check_input_cell(input_row, input_column)
         if self.check_input == 1:
             x = self.x
             y = self.y
@@ -79,16 +84,20 @@ class ReversiModel:
         self.switch_turn()
         self.search_putting_position()
 
-    def check_input_cell(self, put_cell):
+    def check_input_cell(self, input_row, input_column):
         try:
-            answer = tuple(map(int, put_cell.strip("()").split(",")))
+            row = int(input_row)
+            column = int(input_column)
+            answer = (row, column)
+            if answer in self.valid_moves:
+                self.x = row
+                self.y = column
+                self.check_input = 1
+            else:
+                self.check_input = 0
         except ValueError:
-            answer = None
-        if answer in self.valid_moves:
-            self.x, self.y = map(int, put_cell.strip("()").split(","))
-            self.check_input = 1
-        else:
             self.check_input = 0
+
         return self.check_input
 
     def change_stone(self, x, y):
@@ -152,7 +161,7 @@ class ReversiModel:
                                     elif self.board[nx][ny] == self.turn:
                                         self.board[x][y] = 3
                                         self.valid_moves.add((x, y))
-        return self.board, self.valid_moves, self.turn, self.enemy
+        return self.board, self.valid_moves
 
     def check_turn(self):
         if self.valid_moves == set():

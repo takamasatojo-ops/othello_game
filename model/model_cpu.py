@@ -6,7 +6,11 @@ from model.model import ReversiModel
 class ReversiModelCpu(ReversiModel):
     def __init__(self):
         super().__init__(
-            board=None, valid_moves=None, turn=None, enemy=None, check_end_game=None
+            board=None,
+            valid_moves=None,
+            turn=None,
+            enemy=None,
+            check_end_game=None
         )
         self.minimax_depth = 3
         self.best_cpu_position = ""
@@ -96,13 +100,16 @@ class ReversiModelCpu(ReversiModel):
     def check_input_cell_cpu(self, put_cell, human_stone):
         if self.turn == human_stone:
             try:
-                answer = tuple(map(int, put_cell.strip("()").split(",")))
+                row = int(put_cell[0])
+                column = int(put_cell[1])
+                answer = (row, column)
+                if answer in self.valid_moves:
+                    self.x = row
+                    self.y = column
+                    self.check_input = 1
+                else:
+                    self.check_input = 0
             except ValueError:
-                answer = None
-            if answer in self.valid_moves:
-                self.x, self.y = map(int, put_cell.strip("()").split(","))
-                self.check_input = 1
-            else:
                 self.check_input = 0
         else:
             if put_cell == "":

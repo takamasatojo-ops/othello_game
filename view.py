@@ -22,14 +22,14 @@ class BoardView:
         ]
 
     def select_cpu_human(self):
-        select_partner = input("Which do you play with human or CPU?:")
+        select_partner = input("人間対人間は「1」を入力、人間対CPUは「2」を入力してください:")
         return select_partner
 
     def select_stone(self):
-        select_stone = input("Which do you choose black or white?:")
-        if select_stone == "black":
+        select_stone = input("あなたが黒を選ぶ場合は「1」、白を選ぶ場合は「2」を入力してください:")
+        if select_stone == "1":
             human_stone = 1
-        elif select_stone == "white":
+        elif select_stone == "2":
             human_stone = 2
         else:
             human_stone = None
@@ -41,19 +41,19 @@ class BoardView:
             self.turn = "B"
         elif model.turn == 2:
             self.turn = "W"
-        print(f"current turn:{self.turn}")
-        print(f"you can put your stone on {model.valid_moves}")
+        print(f"現在のターン:{self.turn}")
+        print(f"あなたは次の場所に石を置くことができます(行,列)： {model.valid_moves}")
         if model.check_input == 0:
             self.print_correct_answer()
         if model.turn_pass == 1:
-            print("Black is pass")
+            print("黒がパスです")
         elif model.turn_pass == 2:
-            print("White is pass")
+            print("白がパスです")
         else:
             pass
 
     def print_correct_answer(self):
-        print("Please input correct answer")
+        print("正しい値を入力してください")
 
     def print_board(self, model_board):
         for x in range(8):
@@ -66,36 +66,41 @@ class BoardView:
                     self.board[x][y] = "W"
                 elif model_board[x][y] == 3:
                     self.board[x][y] = "*"
-        print("  " + " ".join(str(i) for i in range(8)))
+        print("     -------列------")
+        print("     " + " ".join(str(i) for i in range(8)))
         for i, row in enumerate(self.board):
-            print(f"{i} " + " ".join(row))
+            if i == 3:
+                print(f"行 {i} " + " ".join(row))
+            else:
+                print(f" | {i} " + " ".join(row))
 
-    def print_cpu_select(self, model_cpu, human_stone):
+    def print_cpu_select(self, model_cpu):
         if model_cpu.cpu_put_stone is True:
-            print(f"CPU selected {model_cpu.best_cpu_position}")
+            print(f"CPUは次を選びました：{model_cpu.best_cpu_position}")
         else:
             pass
 
     def change_stone(self):
-        put_cell = input("You put your stone on:")
-        return put_cell
+        input_row = input("行番号を入力してください:")
+        input_column = input("列番号を入力してください:")
+        return input_row, input_column
 
     def change_stone_cpu(self, model_cpu, human_stone):
         if model_cpu.turn == human_stone:
             put_cell_cpu = self.change_stone()
         else:
-            put_cell_cpu = input("CPU put its stone(Enter)")
+            put_cell_cpu = input("CPUの番です(Enterを押下)")
         return put_cell_cpu
 
     def end_game(self, model):
         self.print_board(model.board)
-        print("game set")
-        print(f"number of Black is {model.num_B}")
-        print(f"number of White is {model.num_W}")
+        print("ゲーム終了です")
+        print(f"黒石の数は {model.num_B}")
+        print(f"白石の数は {model.num_W}")
         if model.winner == 1:
-            self.winner = "Black"
+            self.winner = "黒が勝ちました"
         elif model.winner == 2:
-            self.winner = "White"
+            self.winner = "白が勝ちました"
         elif model.winner == 3:
-            self.winner = "Draw"
-        print(f"winner is {self.winner}")
+            self.winner = "引き分けです"
+        print(self.winner)
